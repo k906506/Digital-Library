@@ -1,5 +1,3 @@
-; 회원가입 파라미터 확인
-
 <!DOCTYPE html>
 <html lang="en">
 
