@@ -20,7 +20,7 @@
         </div>
         <div class="mb-3 ">
             <label for="name" class="form-label">휴대전화</label>
-            <input type="number" name="phoneNumber" class="form-control" id="phoneNumber" placeholder="번호를 입력해주세요.">
+            <input type="tel" name="phoneNumber" class="form-control" id="phoneNumber" placeholder="번호를 입력해주세요.">
         </div>
         <div class="mb-3 ">
             <label for="email" class="form-label">아이디 (이메일 형식)</label>
