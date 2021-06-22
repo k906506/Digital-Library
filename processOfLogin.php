@@ -1,42 +1,32 @@
 <?php
-$conn = mysqli_connect("localhost", "root", "비밀번호", "test", 3307);
-//아이디 비교와 비밀번호 비교가 필요한 시점이다.
-// 1차로 DB에서 비밀번호를 가져온다
-// 평문의 비밀번호와 암호화된 비밀번호를 비교해서 검증한다.
-$email = $_POST['email'];
-$password = $_POST['password'];
+$conn = oci_connect("c##kodo", 1234, "USER_ACCOUNT_INFO"); // USER_ACCOUNT_INFO과 연결한다.
+$email = $_POST['email']; // 인자로 들어온 email
+$password = $_POST['password']; // 인자로 들어온 비밀번호
 
-// DB 정보 가져오기
-$sql = "SELECT * FROM user WHERE email ='{$email}'";
-$result = mysqli_query($conn, $sql);
+// 인자로 들어온 email로 쿼리문을 실행하고 결과를 저장한다.
+$sql = "SELECT * FROM USER_ACCOUNT_INFO WHERE email ='{$email}'";
+$sql_info = oci_parse($conn, $sql);
 
-$row = mysqli_fetch_array($result);
-$hashedPassword = $row['password'];
-$row['id'];
+$fetch_info = oci_fetch_array($sql_info);
+$hashedPassword = $fetch_info['password'];
 
-foreach($row as $key => $r){
-    echo "{$key} : {$r} <br>";
-}
-// echo $row['id'];
-// DB 정보를 가져왔으니
-// 비밀번호 검증 로직을 실행하면 된다.
-$passwordResult = password_verify($password, $hashedPassword);
-if ($passwordResult === true) {
-    // 로그인 성공
-    // 세션에 id 저장
+//foreach ($fetch_info as $key => $r) {
+//    echo "{$key} : {$r} <br>";
+//}
+
+$passwordResult = password_verify($password, $hashedPassword); // 사용자가 입력한 비밀번호와 등록된 비밀번호(해쉬화된 비밀번호)와 비교한다.
+if ($passwordResult == true) { // 입력한 비밀번호가 정상적인 경우 세션에 email을 저장한다.
     session_start();
-    $_SESSION['userId'] = $row['id'];
+    $_SESSION['userEmail'] = $fetch_info['email'];
     print_r($_SESSION);
-    echo $_SESSION['userId'];
-
+    echo $_SESSION['userEmail'];
     ?>
     <script>
         alert("로그인에 성공하였습니다.")
-        location.href = "index.php";
+        location.href = "main.php";
     </script>
     <?php
 } else {
-    // 로그인 실패
     ?>
     <script>
         alert("로그인에 실패하였습니다");
