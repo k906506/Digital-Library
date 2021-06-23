@@ -16,7 +16,7 @@ $email = $_POST['email']; // 인자로 들어온 email
 $password = $_POST['password']; // 인자로 들어온 비밀번호
 
 // 인자로 들어온 email로 쿼리문을 실행하고 결과를 저장
-$sql = "SELECT EMAIL, PASSWORD FROM USER_ACCOUNT_INFO WHERE email ='{$email}'";
+$sql = "SELECT CNAME, EMAIL, PASSWORD FROM USER_ACCOUNT_INFO WHERE EMAIL ='{$email}'";
 $sql_info = oci_parse($conn, $sql);
 
 //
