@@ -23,12 +23,13 @@ $sql_info = oci_parse($conn, $sql);
 oci_execute($sql_info);
 
 // DB에 저장된 비밀번호와 현재 입력한 비밀번호를 비교해서 같으면 로그인 성공
-$storedPassword = oci_fetch_array($sql_info)[1];
+$storedInfo = oci_fetch_array($sql_info); // 쿼리문 실행 결과
+$storedName = $storedInfo[0]; // CNAME
+$storedPassword = $storedInfo[2]; // PASSWORD
+
 if ($password == $storedPassword) { // 입력한 비밀번호가 정상적인 경우 세션에 EMAIL 저장
     session_start();
-    $_SESSION['userEmail'] = oci_fetch_array($sql_info)[0];
-    print_r($_SESSION);
-    echo $_SESSION['userEmail'];
+    $_SESSION['userName'] = $storedName;
     oci_free_statement($sql_info); // 메모리 반환
     oci_close($conn) // 오라클 종료
     ?>
