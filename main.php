@@ -21,7 +21,7 @@ session_start();
 </head>
 <body>
 <?php
-if (isset($_SESSION['userName'])) { // 세션이 있는 경우
+if (isset($_SESSION['userCno'])) { // 세션이 있는 경우
     ?>
     <div class="container" style="text-align: right">
         <div class="nav-item" style="margin-top : 10px;">
@@ -29,14 +29,10 @@ if (isset($_SESSION['userName'])) { // 세션이 있는 경우
         </div>
     </div>
     <div class="container">
-        <div class="jumbotron">
-            <div class="container">
-                <h1 style="margin-bottom: 100px"><b>전자 도서관</b></h1><br>
-                <div style="text-align: center;">
-                    <p><a class="btn btn-primary pull-center" href="secondMain.php" role="button">통합 시스템 바로가기</a>
-                    </p>
-                </div>
-            </div>
+        <h1 style="margin-top:30px; margin-left:30px;"><b>전자 도서관</b></h1><br>
+        <div style="text-align: center;">
+            <p><a class="btn btn-primary pull-center" href="secondMain.php" role="button">통합 시스템 바로가기</a>
+            </p>
         </div>
     </div>
     <?php

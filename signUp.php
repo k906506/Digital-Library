@@ -15,16 +15,16 @@
 <form action="processOfSignUp.php" method="POST" id="signup-form">
     <div class="w-50 ml-auto mr-auto mt-5">
         <div class="mb-3 ">
+            <label for="name" class="form-label">학번</label>
+            <input type="tel" name="cno" class="form-control" id="cno" placeholder="학번을 입력해주세요.">
+        </div>
+        <div class="mb-3 ">
             <label for="name" class="form-label">이름</label>
-            <input type="name" name="name" class="form-control" id="name" placeholder="이름을 입력해주세요.">
+            <input type="name" name="name" class="form-control" id="name" placeholder="번호를 입력해주세요.">
         </div>
         <div class="mb-3 ">
-            <label for="name" class="form-label">휴대전화</label>
-            <input type="tel" name="phoneNumber" class="form-control" id="phoneNumber" placeholder="번호를 입력해주세요.">
-        </div>
-        <div class="mb-3 ">
-            <label for="email" class="form-label">아이디 (이메일 형식)</label>
-            <input type="email" name="email" class="form-control" id="email" placeholder="아이디를 입력해주세요.">
+            <label for="email" class="form-label">이메일</label>
+            <input type="email" name="email" class="form-control" id="email" placeholder="이메일을 입력해주세요.">
         </div>
         <div class="mb-3 ">
             <label for="password" class="form-label">비밀번호</label>
@@ -41,13 +41,13 @@
 <script>
     const signupForm = document.querySelector("#signup-form");
     const signupButton = document.querySelector("#signup-button");
+    const cno = document.querySelector('#cno');
     const name = document.querySelector('#name');
-    const phoneNumber = document.querySelector('#phoneNumber');
     const email = document.querySelector('#email');
     const password = document.querySelector("#password");
     const passwordCheck = document.querySelector("#password-check");
     signupButton.addEventListener("click", function (e) {
-        if (!name.value || !phoneNumber.value || !email.value || !password.value || !passwordCheck.value) { // 인자 값 중 하나라도 비어있으면 false
+        if (!cno.value || !name.value || !email.value || !password.value || !passwordCheck.value) { // 인자 값 중 하나라도 비어있으면 false
             alert("공백을 허용하지 않습니다. 모든 정보를 입력해주세요!")
         } else if (password.value && password.value == passwordCheck.value) { // 인자가 모두 존재하고 password == passwordCheck인 경우에 true
             signupForm.submit();
