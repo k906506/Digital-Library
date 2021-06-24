@@ -23,15 +23,23 @@
 </div>
 <h3 style="text-align: center"><b>통합 시스템</b></h3>
 <div style="text-align: center;">
-    <form method="POST" action="processOfSearchBook.php" id="search-form">
-        <div class="w-50 ml-auto mr-auto mt-5 mb-5">
-            <div style="margin-bottom : 10px;">
-                <h6><b>검색 / 대출 / 예약</b></h6>
-            </div>
-            <input type="text" name="search" size="50%" placeholder="도서명을 입력해주세요.">
-            <button id="search-button" class="btn btn-primary">조회</button>
+    <div class="w-50 ml-auto mr-auto mt-5 mb-5">
+        <div style="margin-bottom : 10px;">
+            <h6><b>검색 / 대출 / 예약</b></h6>
         </div>
-    </form>
+        <div id="search_box" style="text-align: center;">
+            <form action="processOfSearchBook.php" method="get">
+                <select name="category">
+                    <option value="title">제목</option>
+                    <option value="name">저자</option>
+                    <option value="publisher">출판사</option>
+                    <option value="year">발행연도</option>
+                </select>
+                <input type="text" name="search" size="50%" required="required" placeholder="검색어를 입력해주세요.">
+                <button class="btn btn-primary">조회</button>
+            </form>
+        </div>
+    </div>
     <div class="w-50 ml-auto mr-auto mt-5">
         <div class="mb-3">
             <button id="return-button" class="btn btn-primary mb-3">반납</button>
@@ -44,13 +52,7 @@
     const searchButton = document.querySelector("#search-button");
     const returnButton = document.querySelector("#return-button");
     const bookName = document.querySelector('#bookName');
-    searchButton.addEventListener("click", function (e) {
-        if (!bookName.value) { // 두 개의 인자 값 중 하나라도 비어있으면 false
-            alert("공백을 허용하지 않습니다. 모든 정보를 입력해주세요!")
-        } else {
-            searchForm.submit();
-        }
-    });
+
     returnButton.addEventListener("click", function (e) {
         location.href = "processOfReturnBook.php";
     });

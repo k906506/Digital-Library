@@ -9,12 +9,13 @@ $dsn = "
 (CONNECT_DATA= (SERVICE_NAME=XE))
 )
 ";
-// 세션 시작
-session_start();
+
+// 실행
+$conn = oci_connect('d201701971', "rhehgus1019", $dsn); // DB와 연동
+$category = $_GET["category"];
+$search = $_GET["search"];
 ?>
 <!DOCTYPE html>
-<html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -31,32 +32,6 @@ session_start();
     </style>
 </head>
 <body>
-
-<?php
-// 실행
-$conn = oci_connect('d201701971', "rhehgus1019", $dsn); // DB와 연동
-$reservationSql = "SELECT E.ISBN, E.TITLE, PR.DATERENTED, PR.DATERETURNED, E.EXTTIMES FROM EBOOK E INNER JOIN PREVIOUSRENTAL PR ON (E.ISBN = PR.ISBN) WHERE PR.CNO = '{$_SESSION['userCno']}' ORDER BY PR.DATERETURNED";
-$resultSql = oci_parse($conn, $reservationSql);
-oci_execute($resultSql);
-
-$data = array();
-while ($row = oci_fetch_row($resultSql)) {
-    $data[] = [$row[0], $row[1], $row[2], $row[3], $row[4]];
-}
-
-$countReservation = sizeof($data); // 쿼리문 실행 결과의 크기
-
-$findNameSql = "SELECT NAME FROM CUSTOMER WHERE CNO ='{$_SESSION['userCno']}'";
-$resultSql = oci_parse($conn, $findNameSql);
-oci_execute($resultSql);
-
-$storedInfo = oci_fetch_array($resultSql); // 쿼리문 실행 결과
-$userName = $storedInfo[0]; // 사용자 이름
-
-oci_free_statement($resultSql); // 메모리 반환
-oci_close($conn); // 오라클 종료
-?>
-
 <div class="container" style="text-align: right">
     <div class="nav-item" style="margin-top : 10px;">
         <a class="nav-link active" aria-current="page" onclick="logout()">로그아웃</a>
@@ -67,17 +42,45 @@ oci_close($conn); // 오라클 종료
 </div>
 <div class="container">
     <div id="board_area">
-        <h3 style="text-align: center"><b><?= $userName ?>의 대출 기록</b></h3><br>
+        <!-- 출력을 위해서 form의 title, name, content 값을 제목, 글쓴이, 내용으로 변경하기 위한 조건문 -->
+        <?php
+        if ($category == 'title') {
+            $keyword = '제목';
+            $type = 'TITLE';
+        } else if ($category == 'name') {
+            $keyword = '저자';
+            $type = 'AUTHORS.AUTHOR';
+        } else if ($category == 'publisher') {
+            $keyword = '출판사';
+            $type = 'PUBLISHER';
+        } else {
+            $keyword = '발행연도';
+            $type = 'YEAR';
+        }
+        ?>
+        <h3 style="text-align: center">'<b><?= $keyword ?></b>'에서 '<b><?= $search ?></b>' 검색결과</h3><br>
         <table class="table table-striped" style="text-align: center; border: 1px solid #ddddda">
             <tr>
                 <th style="background-color: #eeeeee; text-align: center;">ISBN</th>
-                <th style="background-color: #eeeeee; text-align: center;">책 제목</th>
-                <th style="background-color: #eeeeee; text-align: center;">대여 일자</th>
-                <th style="background-color: #eeeeee; text-align: center;">반납 일자</th>
-                <th style="background-color: #eeeeee; text-align: center;">반납일 연장</th>
-                <th style="background-color: #eeeeee; text-align: center;">반납</th>
+                <th style="background-color: #eeeeee; text-align: center;">제목</th>
+                <th style="background-color: #eeeeee; text-align: center;">저자</th>
+                <th style="background-color: #eeeeee; text-align: center;">출판사</th>
+                <th style="background-color: #eeeeee; text-align: center;">발행연도</th>
+                <th style="background-color: #eeeeee; text-align: center;">대여</th>
+                <th style="background-color: #eeeeee; text-align: center;">예약</th>
             </tr>
+            <!-- 검색한 결과 페이징 구현 -->
             <?php
+            $sql = "SELECT EBOOK.ISBN, TITLE, AUTHORS.AUTHOR, PUBLISHER, YEAR FROM EBOOK INNER JOIN AUTHORS ON (AUTHORS.ISBN = EBOOK.ISBN) WHERE {$type} = '{$search}'";
+            $resultSql = oci_parse($conn, $sql);
+            oci_execute($resultSql);
+
+            $data = array();
+            while ($row = oci_fetch_row($resultSql)) {
+                $data[] = [$row[0], $row[1], $row[2], $row[3], $row[4]];
+            }
+
+            $countReservation = sizeof($data); // 쿼리문 실행 결과의 크기
             for ($i = 0; $i < $countReservation; $i++) {
                 ?>
                 <!-- 글 목록 가져오기 -->
@@ -87,15 +90,16 @@ oci_close($conn); // 오라클 종료
                     <td width="200"><?= $data[$i][1]; ?></td>
                     <td width="100"><?= $data[$i][2]; ?></td>
                     <td width="100"><?= $data[$i][3]; ?></td>
+                    <td width="100"><?= $data[$i][4]; ?></td>
                     <td width="100">
-                        <form action='processOfExtensionDate.php' method="get">
-                            <button type="submit" id="<?= $i ?>" class="btn btn-primary m-10" onclick=document.getElementById("id)>연장
+                        <form action='processOfReturnBookAfterClick.php.php' method="get">
+                            <button type="submit" id="<?= $i ?>" class="btn btn-primary m-10">대여
                             </button>
                         </form>
                     </td>
                     <td width="100">
                         <form action='processOfReturnBookAfterClick.php.php' method="get">
-                            <button type="submit" id="<?= $i ?>" class="btn btn-primary m-10">반납
+                            <button type="submit" id="<?= $i ?>" class="btn btn-primary m-10">예약
                             </button>
                         </form>
                     </td>
@@ -105,8 +109,6 @@ oci_close($conn); // 오라클 종료
         </table>
     </div>
 </div>
-
-
 <script>
     function logout() {
         const data = confirm("로그아웃 하시겠습니까?");
@@ -117,4 +119,3 @@ oci_close($conn); // 오라클 종료
 </script>
 </body>
 </html>
-
