@@ -40,14 +40,11 @@ $resultSql = oci_parse($conn, $reservationSql);
 oci_execute($resultSql);
 
 $data = array();
-
 while ($row = oci_fetch_row($resultSql)) {
     $data[] = [$row[0], $row[1], $row[2], $row[3], $row[4]];
 }
 
 $countReservation = sizeof($data); // 쿼리문 실행 결과의 크기
-
-oci_free_statement($resultSql); // 메모리 반환
 
 $findNameSql = "SELECT NAME FROM CUSTOMER WHERE CNO ='{$_SESSION['userCno']}'";
 $resultSql = oci_parse($conn, $findNameSql);
@@ -70,7 +67,7 @@ oci_close($conn); // 오라클 종료
 </div>
 <div class="container">
     <div id="board_area">
-        <h1><b> ".$userName." 대출 기록</b></h1><br>
+        <h3 style="text-align: center"><b><?= $userName ?>의 대출 기록</b></h3><br>
         <table class="table table-striped" style="text-align: center; border: 1px solid #ddddda">
             <tr>
                 <th style="background-color: #eeeeee; text-align: center;">ISBN</th>
@@ -91,10 +88,16 @@ oci_close($conn); // 오라클 종료
                     <td width="100"><?= $data[$i][2]; ?></td>
                     <td width="100"><?= $data[$i][3]; ?></td>
                     <td width="100">
-                        <button type="button" id="extension-button" class="btn btn-primary m-10">연장</button>
+                        <form action='processOfExtensionDate.php' method="get">
+                            <button type="submit" id="<?= $i ?>" class="btn btn-primary m-10" onclick=document.getElementById("id)>연장
+                            </button>
+                        </form>
                     </td>
                     <td width="100">
-                        <button type="button" id="return-button" class="btn btn-primary">반납</button>
+                        <form action='processOfReturnBookAfterClick.php.php' method="get">
+                            <button type="submit" id="<?= $i ?>" class="btn btn-primary m-10">반납
+                            </button>
+                        </form>
                     </td>
                 </tr>
                 </tbody>
@@ -102,6 +105,7 @@ oci_close($conn); // 오라클 종료
         </table>
     </div>
 </div>
+
 
 <script>
     function logout() {
