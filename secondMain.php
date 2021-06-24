@@ -13,8 +13,15 @@
 </head>
 
 <body>
-<h1 style = "margin-top:30px; margin-left:30px;"><b>전자 도서관</b></h1><br>
-<h3 style = "text-align: center"><b>통합 시스템</b></h3>
+<div class="container" style="text-align: right">
+    <div class="nav-item" style="margin-top : 10px;">
+        <a class="nav-link active" aria-current="page" onclick="logout()">로그아웃</a>
+    </div>
+</div>
+<div class="container">
+    <h1 style="margin-top:30px; margin-left:30px;"><b>전자 도서관</b></h1><br>
+</div>
+<h3 style="text-align: center"><b>통합 시스템</b></h3>
 <div style="text-align: center;">
     <form method="POST" action="processOfSearchBook.php" id="search-form">
         <div class="w-50 ml-auto mr-auto mt-5 mb-5">
@@ -47,6 +54,14 @@
     returnButton.addEventListener("click", function (e) {
         location.href = "processOfReturnBook.php";
     });
+
+    function logout() {
+        const data = confirm("로그아웃 하시겠습니까?");
+        if (data) {
+            location.href = "processOfLogout.php";
+        }
+    }
+</script>
 </script>
 </body>
 </html>
