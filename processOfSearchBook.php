@@ -44,7 +44,7 @@ $search = $_GET["search"];
 </div>
 <div class="container">
     <div id="board_area">
-        <!-- 출력을 위해서 form의 title, name, content 값을 제목, 글쓴이, 내용으로 변경하기 위한 조건문 -->
+        <!-- 어떤 검색 카테고리로 들어왔는지 확인하기 위한 조건문 -->
         <?php
         if ($category == 'title') {
             $keyword = '제목';
@@ -102,11 +102,6 @@ $search = $_GET["search"];
     </div>
 </div>
 <script>
-    let borrowNumber = -1;
-    function saveIsbn(i) {
-        borrowNumber = i;
-    }
-
     function logout() {
         const data = confirm("로그아웃 하시겠습니까?");
         if (data) {

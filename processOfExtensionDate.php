@@ -33,7 +33,7 @@ if (oci_fetch_row($sql_info)) {
     oci_execute($sql_info);
     $row = oci_fetch_row($sql_info)[0];
     if ($row < 2) { // 해당 도서가 연장 횟수가 2회 이하일 때 연장 가능
-        $sql = "UPDATE PREVIOUSRENTAL SET DATERETURNED = DATERETURNED + 10 WHERE ISBN = '{$_GET['isbn']}'";
+        $sql = "UPDATE EBOOK SET DATEDUE = DATEDUE + 10 WHERE ISBN = '{$_GET['isbn']}'";
         $sql_info = oci_parse($conn, $sql);
         oci_execute($sql_info);
         oci_free_statement($sql_info); // 메모리 반환

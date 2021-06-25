@@ -35,13 +35,13 @@ session_start();
 <?php
 // 실행
 $conn = oci_connect('d201701971', "rhehgus1019", $dsn); // DB와 연동
-$reservationSql = "SELECT E.ISBN, E.TITLE, PR.DATERENTED, PR.DATERETURNED, E.EXTTIMES FROM EBOOK E INNER JOIN PREVIOUSRENTAL PR ON (E.ISBN = PR.ISBN) WHERE PR.CNO = '{$_SESSION['userCno']}' ORDER BY PR.DATERETURNED";
+$reservationSql = "SELECT ISBN, TITLE, DATERENTED, DATEDUE FROM EBOOK WHERE CNO = '{$_SESSION['userCno']}' ORDER BY DATEDUE";
 $resultSql = oci_parse($conn, $reservationSql);
 oci_execute($resultSql);
 
 $data = array();
 while ($row = oci_fetch_row($resultSql)) {
-    $data[] = [$row[0], $row[1], $row[2], $row[3], $row[4]];
+    $data[] = [$row[0], $row[1], $row[2], $row[3]];
 }
 
 $countReservation = sizeof($data); // 쿼리문 실행 결과의 크기
