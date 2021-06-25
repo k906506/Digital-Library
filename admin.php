@@ -35,26 +35,16 @@ session_start();
 <?php
 // 실행
 $conn = oci_connect('d201701971', "rhehgus1019", $dsn); // DB와 연동
-$reservationSql = "SELECT ISBN, TITLE, DATERENTED, DATEDUE FROM EBOOK WHERE CNO = '{$_SESSION['userCno']}' ORDER BY DATEDUE";
+$reservationSql = "SELECT C.CNO, C.NAME, R.ISBN, R.DATERENTED, R.DATERETURNED FROM PREVIOUSRENTAL R INNER JOIN CUSTOMER C ON R.CNO = C.CNO ORDER BY DATERETURNED";
 $resultSql = oci_parse($conn, $reservationSql);
 oci_execute($resultSql);
 
 $data = array();
 while ($row = oci_fetch_row($resultSql)) {
-    $data[] = [$row[0], $row[1], $row[2], $row[3]];
+    $data[] = [$row[0], $row[1], $row[2], $row[3], $row[4]];
 }
 
 $countReservation = sizeof($data); // 쿼리문 실행 결과의 크기
-
-$findNameSql = "SELECT NAME FROM CUSTOMER WHERE CNO ='{$_SESSION['userCno']}'";
-$resultSql = oci_parse($conn, $findNameSql);
-oci_execute($resultSql);
-
-$storedInfo = oci_fetch_array($resultSql); // 쿼리문 실행 결과
-$userName = $storedInfo[0]; // 사용자 이름
-
-oci_free_statement($resultSql); // 메모리 반환
-oci_close($conn); // 오라클 종료
 ?>
 
 <div class="container" style="text-align: right">
@@ -67,15 +57,14 @@ oci_close($conn); // 오라클 종료
 </div>
 <div class="container">
     <div id="board_area">
-        <h3 style="text-align: center"><b><?= $userName ?>의 대출 기록</b></h3><br>
+        <h3 style="text-align: center"><b>모든 사용자의 대출 기록</b></h3><br>
         <table class="table table-striped" style="text-align: center; border: 1px solid #ddddda">
             <tr>
+                <th style="background-color: #eeeeee; text-align: center;">학번</th>
+                <th style="background-color: #eeeeee; text-align: center;">이름</th>
                 <th style="background-color: #eeeeee; text-align: center;">ISBN</th>
-                <th style="background-color: #eeeeee; text-align: center;">책 제목</th>
                 <th style="background-color: #eeeeee; text-align: center;">대여 일자</th>
                 <th style="background-color: #eeeeee; text-align: center;">반납 일자</th>
-                <th style="background-color: #eeeeee; text-align: center;">반납일 연장</th>
-                <th style="background-color: #eeeeee; text-align: center;">반납</th>
             </tr>
             <?php
             for ($i = 0; $i < $countReservation; $i++) {
@@ -83,12 +72,11 @@ oci_close($conn); // 오라클 종료
                 <!-- 글 목록 가져오기 -->
                 <tbody>
                 <tr style="vertical-align: middle">
-                    <td width="70"><?= $data[$i][0]; ?></td>
-                    <td width="200"><?= $data[$i][1]; ?></td>
+                    <td width="100"><?= $data[$i][0]; ?></td>
+                    <td width="100"><?= $data[$i][1]; ?></td>
                     <td width="100"><?= $data[$i][2]; ?></td>
                     <td width="100"><?= $data[$i][3]; ?></td>
-                    <td width="100"><a href="processOfExtensionDate.php?isbn=<?= $data[$i][0] ?>">연장</a></td>
-                    <td width="100"><a href="processOfReturnBookAfterClick.php?isbn=<?= $data[$i][0] ?>">반납</a></td>
+                    <td width="100"><?= $data[$i][4]; ?></td>
                 </tr>
                 </tbody>
             <?php } ?>

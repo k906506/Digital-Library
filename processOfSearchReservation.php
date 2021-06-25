@@ -35,13 +35,14 @@ session_start();
 <?php
 // 실행
 $conn = oci_connect('d201701971', "rhehgus1019", $dsn); // DB와 연동
-$reservationSql = "SELECT ISBN, TITLE, DATERENTED, DATEDUE FROM EBOOK WHERE CNO = '{$_SESSION['userCno']}' ORDER BY DATEDUE";
-$resultSql = oci_parse($conn, $reservationSql);
+
+$sql = "SELECT EBOOK.ISBN, EBOOK.TITLE, RESERVATION.RESERVATIONTIME FROM RESERVATION INNER JOIN EBOOK ON EBOOK.ISBN = RESERVATION.ISBN WHERE RESERVATION.CNO = '{$_SESSION['userCno']}'";
+$resultSql = oci_parse($conn, $sql);
 oci_execute($resultSql);
 
 $data = array();
 while ($row = oci_fetch_row($resultSql)) {
-    $data[] = [$row[0], $row[1], $row[2], $row[3]];
+    $data[] = [$row[0], $row[1], $row[2]];
 }
 
 $countReservation = sizeof($data); // 쿼리문 실행 결과의 크기
@@ -63,19 +64,17 @@ oci_close($conn); // 오라클 종료
     </div>
 </div>
 <div class="container">
-    <h1 style="margin-top:30px; margin-left:30px;"><a href="main.php" style="color : black"><b>전자 도서관</b></a></h1><br>
+    <h1 style="margin-top:30px; margin-left:30px;"><a href="secondMain.php" style="color : black"><b>전자 도서관</b></a></h1><br>
 </div>
 <div class="container">
     <div id="board_area">
-        <h3 style="text-align: center"><b><?= $userName ?>의 대출 기록</b></h3><br>
+        <h3 style="text-align: center"><b><?= $userName ?>의 예약 기록</b></h3><br>
         <table class="table table-striped" style="text-align: center; border: 1px solid #ddddda">
             <tr>
                 <th style="background-color: #eeeeee; text-align: center;">ISBN</th>
                 <th style="background-color: #eeeeee; text-align: center;">책 제목</th>
-                <th style="background-color: #eeeeee; text-align: center;">대여 일자</th>
-                <th style="background-color: #eeeeee; text-align: center;">반납 일자</th>
-                <th style="background-color: #eeeeee; text-align: center;">반납일 연장</th>
-                <th style="background-color: #eeeeee; text-align: center;">반납</th>
+                <th style="background-color: #eeeeee; text-align: center;">예약 일자</th>
+                <th style="background-color: #eeeeee; text-align: center;">예약 취소</th>
             </tr>
             <?php
             for ($i = 0; $i < $countReservation; $i++) {
@@ -86,9 +85,7 @@ oci_close($conn); // 오라클 종료
                     <td width="70"><?= $data[$i][0]; ?></td>
                     <td width="200"><?= $data[$i][1]; ?></td>
                     <td width="100"><?= $data[$i][2]; ?></td>
-                    <td width="100"><?= $data[$i][3]; ?></td>
-                    <td width="100"><a href="processOfExtensionDate.php?isbn=<?= $data[$i][0] ?>">연장</a></td>
-                    <td width="100"><a href="processOfReturnBookAfterClick.php?isbn=<?= $data[$i][0] ?>">반납</a></td>
+                    <td width="100"><a href="processOfCancelReservation.php?isbn=<?= $data[$i][0] ?>">예약 취소</a></td>
                 </tr>
                 </tbody>
             <?php } ?>

@@ -15,10 +15,10 @@ session_start();
 $conn = oci_connect('d201701971', "rhehgus1019", $dsn); // DB와 연동
 
 // 이미 대여된 경우
-$sql = "SELECT * FROM PREVIOUSRENTAL WHERE ISBN = '{$_GET['isbn']}'";
+$sql = "SELECT CNO FROM EBOOK WHERE ISBN = '{$_GET['isbn']}'";
 $sql_info = oci_parse($conn, $sql);
 oci_execute($sql_info);
-if (oci_fetch_row($sql_info)) { // 대여 불가
+if (oci_fetch_row($sql_info)[0]) { // 대여 불가
     ?>
     <script>
         alert("이미 대여된 도서입니다. 예약을 진행해주세요.");
@@ -26,13 +26,13 @@ if (oci_fetch_row($sql_info)) { // 대여 불가
     </script>
     <?php
 } else { // 대여 가능
-    $sql = "SELECT * FROM PREVIOUSRENTAL WHERE CNO = '{$_SESSION['userCno']}'";
+    $sql = "SELECT ISBN FROM EBOOK WHERE CNO = '{$_SESSION['userCno']}'";
     $sql_info = oci_parse($conn, $sql);
     oci_execute($sql_info);
 
     $data = array();
     while ($row = oci_fetch_row($sql_info)) {
-        $data[] = [$row[0], $row[1], $row[2], $row[3]];
+        $data[] = [$row[0]];
     }
     $countReservation = sizeof($data); // 쿼리문 실행 결과의 크기
 
@@ -44,7 +44,15 @@ if (oci_fetch_row($sql_info)) { // 대여 불가
         </script>
         <?php
     } else {
-        $sql = "INSERT INTO PREVIOUSRENTAL (ISBN, DATERENTED, DATERETURNED, CNO) VALUES ('{$_GET['isbn']}', SYSDATE, SYSDATE + 10,'{$_SESSION['userCno']}')";
+        $sql = "UPDATE EBOOK SET CNO = '{$_SESSION['userCno']}' WHERE ISBN = '{$_GET['isbn']}'";
+        $sql_info = oci_parse($conn, $sql);
+        oci_execute($sql_info);
+
+        $sql = "UPDATE EBOOK SET DATERENTED = SYSDATE WHERE ISBN = '{$_GET['isbn']}'";
+        $sql_info = oci_parse($conn, $sql);
+        oci_execute($sql_info);
+
+        $sql = "UPDATE EBOOK SET DATEDUE = SYSDATE + 10 WHERE ISBN = '{$_GET['isbn']}'";
         $sql_info = oci_parse($conn, $sql);
         oci_execute($sql_info);
         ?>

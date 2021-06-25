@@ -32,10 +32,13 @@
     const cno = document.querySelector('#cno');
     const password = document.querySelector("#password");
     loginButton.addEventListener("click", function (e) {
-        if (!cno.value || !password.value) { // 두 개의 인자 값 중 하나라도 비어있으면 false
+        if (cno.value == 'admin' && password.value == 'admin'){ // 관리자 계정이 입력되면
+            location.href = "admin.php"; // 관리자 페이지로 이동
+        }
+        else if (!cno.value || !password.value) { // 두 개의 인자 값 중 하나라도 비어있으면 false
             alert("공백을 허용하지 않습니다. 모든 정보를 입력해주세요!")
         } else {
-            loginForm.submit();
+            loginForm.submit(); // 인자를 넘겨준다
         }
     });
 </script>
