@@ -10,6 +10,8 @@ $dsn = "
 )
 ";
 
+session_start();
+
 // 실행
 $conn = oci_connect('d201701971', "rhehgus1019", $dsn); // DB와 연동
 $category = $_GET["category"];
@@ -71,7 +73,7 @@ $search = $_GET["search"];
             </tr>
             <!-- 검색한 결과 페이징 구현 -->
             <?php
-            $sql = "SELECT EBOOK.ISBN, TITLE, AUTHORS.AUTHOR, PUBLISHER, YEAR FROM EBOOK INNER JOIN AUTHORS ON (AUTHORS.ISBN = EBOOK.ISBN) WHERE {$type} = '{$search}'";
+            $sql = "SELECT EBOOK.ISBN, TITLE, AUTHORS.AUTHOR, PUBLISHER, YEAR FROM EBOOK INNER JOIN AUTHORS ON (AUTHORS.ISBN = EBOOK.ISBN) WHERE {$type} LIKE '%{$search}%'";
             $resultSql = oci_parse($conn, $sql);
             oci_execute($resultSql);
 
@@ -91,18 +93,8 @@ $search = $_GET["search"];
                     <td width="100"><?= $data[$i][2]; ?></td>
                     <td width="100"><?= $data[$i][3]; ?></td>
                     <td width="100"><?= $data[$i][4]; ?></td>
-                    <td width="100">
-                        <form action='processOfReturnBookAfterClick.php.php' method="get">
-                            <button type="submit" id="<?= $i ?>" class="btn btn-primary m-10">대여
-                            </button>
-                        </form>
-                    </td>
-                    <td width="100">
-                        <form action='processOfReturnBookAfterClick.php.php' method="get">
-                            <button type="submit" id="<?= $i ?>" class="btn btn-primary m-10">예약
-                            </button>
-                        </form>
-                    </td>
+                    <td width ="100"><a href="processOfBorrowBook.php?isbn=<?= $data[$i][0] ?>">대여</a></td>
+                    <td width ="100"><a href="processOfReservation.php?isbn=<?= $data[$i][0] ?>">예약</a></td>
                 </tr>
                 </tbody>
             <?php } ?>
@@ -110,6 +102,11 @@ $search = $_GET["search"];
     </div>
 </div>
 <script>
+    let borrowNumber = -1;
+    function saveIsbn(i) {
+        borrowNumber = i;
+    }
+
     function logout() {
         const data = confirm("로그아웃 하시겠습니까?");
         if (data) {
