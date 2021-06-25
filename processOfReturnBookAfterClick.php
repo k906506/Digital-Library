@@ -19,7 +19,19 @@ $sql = "UPDATE EBOOK SET EXTTIMES = 0 WHERE ISBN = '{$_GET['isbn']}'";
 $sql_info = oci_parse($conn, $sql);
 oci_execute($sql_info);
 
-$sql = "DELETE FROM PREVIOUSRENTAL WHERE ISBN = '{$_GET['isbn']}'";
+// 반납이 완료되면 CNO는 0으로
+$sql = "UPDATE EBOOK SET CNO = NULL WHERE ISBN = '{$_GET['isbn']}'";
+$sql_info = oci_parse($conn, $sql);
+oci_execute($sql_info);
+
+// PRIVIOUSRENTAL에 대여일자를 저장하기 위해 대여일자를 다른 변수에 저장
+$sql = "SELECT DATERENTED FROM EBOOK WHERE ISBN = '{$_GET['isbn']}'";
+$sql_info = oci_parse($conn, $sql);
+oci_execute($sql_info);
+$RENTED = oci_fetch_row($sql_info)[0];
+
+// 저장한 대여일자를 PREVIOUSRENTAL에 저장
+$sql = "INSERT INTO PREVIOUSRENTAL (ISBN, DATERENTED, DATERETURNED, CNO) VALUES ('{$_GET['isbn']}', '{$RENTED}' , SYSDATE, '{$_SESSION['userCno']}')";
 $sql_info = oci_parse($conn, $sql);
 oci_execute($sql_info);
 ?>
