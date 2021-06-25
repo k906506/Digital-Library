@@ -22,7 +22,7 @@ if (oci_fetch_row($sql_info)) {
     ?>
     <script>
         alert("같은 도서는 한번만 예약할 수 있습니다!");
-        location.href = "secondMain.php";
+        location.href = history.back();
     </script>
     <?php
 }
@@ -41,6 +41,8 @@ if ($countReservation <= 2) { // 현재 예약된 건수가 2권 이하인 경�
     $sql = "INSERT INTO RESERVATION (ISBN, CNO, RESERVATIONTIME) VALUES ('{$_GET['isbn']}', '{$_SESSION['userCno']}', SYSDATE)";
     $sql_info = oci_parse($conn, $sql);
     oci_execute($sql_info);
+    oci_free_statement($sql_info); // 메모리 반환
+    oci_close($conn) // 오라클 종료
     ?>
     <script>
         alert("예약이 완료되었습니다.");
@@ -48,11 +50,12 @@ if ($countReservation <= 2) { // 현재 예약된 건수가 2권 이하인 경�
     </script>
     <?php
 } else {
-    // 예약 불가능
+    oci_free_statement($sql_info); // 메모리 반환
+    oci_close($conn) // 오라클 종료
     ?>
     <script>
         alert("최대 3권까지 예약할 수 있습니다.");
-        location.href = "secondMain.php";
+        location.href = history.back();
     </script>
     <?php
 }
