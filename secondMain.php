@@ -42,7 +42,8 @@
     </div>
     <div class="w-50 ml-auto mr-auto mt-5">
         <div class="mb-3">
-            <button id="return-button" class="btn btn-primary mb-3">반납</button>
+            <button id="return-button" class="btn btn-primary mb-3">반납하기</button>
+            <button id="reservation-button" class="btn btn-primary mb-3">예약 조회</button>
         </div>
     </div>
 </div>
@@ -51,10 +52,15 @@
     const searchForm = document.querySelector("#search-form");
     const searchButton = document.querySelector("#search-button");
     const returnButton = document.querySelector("#return-button");
+    const reservationButton = document.querySelector("#reservation-button");
     const bookName = document.querySelector('#bookName');
 
     returnButton.addEventListener("click", function (e) {
         location.href = "processOfReturnBook.php";
+    });
+
+    reservationButton.addEventListener("click", function (e) {
+        location.href = "processOfSearchReservation.php";
     });
 
     function logout() {
