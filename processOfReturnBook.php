@@ -63,7 +63,7 @@ oci_close($conn); // 오라클 종료
     </div>
 </div>
 <div class="container">
-    <h1 style="margin-top:30px; margin-left:30px;"><b>전자 도서관</b></h1><br>
+    <h1 style="margin-top:30px; margin-left:30px;"><a href="main.php" style="color : black"><b>전자 도서관</b></a></h1><br>
 </div>
 <div class="container">
     <div id="board_area">
@@ -87,18 +87,8 @@ oci_close($conn); // 오라클 종료
                     <td width="200"><?= $data[$i][1]; ?></td>
                     <td width="100"><?= $data[$i][2]; ?></td>
                     <td width="100"><?= $data[$i][3]; ?></td>
-                    <td width="100">
-                        <form action='processOfExtensionDate.php' method="get">
-                            <button type="submit" id="<?= $i ?>" class="btn btn-primary m-10" onclick=document.getElementById("id)>연장
-                            </button>
-                        </form>
-                    </td>
-                    <td width="100">
-                        <form action='processOfReturnBookAfterClick.php.php' method="get">
-                            <button type="submit" id="<?= $i ?>" class="btn btn-primary m-10">반납
-                            </button>
-                        </form>
-                    </td>
+                    <td width="100"><a href="processOfExtensionDate.php?isbn=<?= $data[$i][0] ?>">연장</a></td>
+                    <td width="100"><a href="processOfReturnBookAfterClick.php?isbn=<?= $data[$i][0] ?>">반납</a></td>
                 </tr>
                 </tbody>
             <?php } ?>
