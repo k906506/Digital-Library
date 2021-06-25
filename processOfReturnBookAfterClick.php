@@ -14,7 +14,11 @@ session_start();
 // 실행
 $conn = oci_connect('d201701971', "rhehgus1019", $dsn); // DB와 연동
 
-// 이미 예약된 경우
+// 반납이 완료되면 연장 횟수는 0으로
+$sql = "UPDATE EBOOK SET EXTTIMES = 0 WHERE ISBN = '{$_GET['isbn']}'";
+$sql_info = oci_parse($conn, $sql);
+oci_execute($sql_info);
+
 $sql = "DELETE FROM PREVIOUSRENTAL WHERE ISBN = '{$_GET['isbn']}'";
 $sql_info = oci_parse($conn, $sql);
 oci_execute($sql_info);

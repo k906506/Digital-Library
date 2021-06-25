@@ -32,29 +32,32 @@ if (oci_fetch_row($sql_info)) {
     $sql_info = oci_parse($conn, $sql);
     oci_execute($sql_info);
     $row = oci_fetch_row($sql_info)[0];
-    if ($row <= 2) { // 해당 도서가 연장 횟수가 2회 이하일 때 연장 가능
+    if ($row < 2) { // 해당 도서가 연장 횟수가 2회 이하일 때 연장 가능
         $sql = "UPDATE PREVIOUSRENTAL SET DATERETURNED = DATERETURNED + 10 WHERE ISBN = '{$_GET['isbn']}'";
         $sql_info = oci_parse($conn, $sql);
         oci_execute($sql_info);
         oci_free_statement($sql_info); // 메모리 반환
 
-        $sql = "UPDATE EBOOK SET EXTTIMES = EXTTIMES + 1 WHERE ISBN = '{$_GET['isbn']}'";
+        $result = $row + 1;
+        $remain = 2 - $result;
+        $sql = "UPDATE EBOOK SET EXTTIMES = {$result} WHERE ISBN = '{$_GET['isbn']}'";
         $sql_info = oci_parse($conn, $sql);
         oci_execute($sql_info);
         ?>
         <script>
-            alert("기한이 10일 연장되었습니다.");
+            alert("기한이 10일 연장되었습니다. 남은 연장 횟수 : <?=$remain?>");
+            location.href = history.back();
         </script>
         <?php
     } else {
-        oci_free_statement($sql_info); // 메모리 반환
-        oci_close($conn); // 오라클 종료
         ?>
         <script>
             alert("연장은 2번까지만 가능합니다.");
             location.href = history.back();
         </script>
         <?php
+        oci_free_statement($sql_info); // 메모리 반환
+        oci_close($conn); // 오라클 종료
     }
 }
 ?>
