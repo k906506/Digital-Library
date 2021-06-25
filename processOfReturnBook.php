@@ -63,7 +63,7 @@ oci_close($conn); // 오라클 종료
     </div>
 </div>
 <div class="container">
-    <h1 style="margin-top:30px; margin-left:30px;"><b>전자 도서관</b></h1><br>
+    <h1 style="margin-top:30px; margin-left:30px;"><a href="main.php" style="color : black"><b>전자 도서관</b></a></h1><br>
 </div>
 <div class="container">
     <div id="board_area">
